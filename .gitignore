@@ -1,0 +1,5 @@
+node_modules/
+target/
+OpenJDK-24/
+*.log
+.env
