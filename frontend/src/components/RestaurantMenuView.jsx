@@ -884,6 +884,307 @@ const styles = `
     font-weight: 600;
     margin-top: 20px;
   }
+
+  /* Payment Form Styles */
+  .payment-form-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+
+  .payment-form-card {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .payment-form-card h2 {
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .payment-subtitle {
+    color: #666;
+    text-align: center;
+    margin-bottom: 25px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+    font-weight: 600;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: #4CAF50;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 15px;
+  }
+
+  .form-row .form-group {
+    flex: 1;
+  }
+
+  .upi-apps, .wallet-options {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+  }
+
+  .upi-apps p, .wallet-options p {
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .upi-icons, .wallet-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .upi-icons span, .wallet-icons span {
+    background: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    border: 1px solid #e1e5e9;
+  }
+
+  .payment-summary {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    color: #666;
+  }
+
+  .summary-row.total {
+    border-top: 2px solid #e1e5e9;
+    padding-top: 10px;
+    font-weight: bold;
+    color: #333;
+    font-size: 18px;
+  }
+
+  .payment-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+  }
+
+  .payment-actions .back-btn {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #6c757d;
+    background: white;
+    color: #6c757d;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .payment-actions .pay-btn {
+    flex: 2;
+    padding: 12px;
+    border: none;
+    background: #4CAF50;
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  /* Bill Styles */
+  .bill-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+
+  .bill-card {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .bill-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e1e5e9;
+  }
+
+  .bill-header h2 {
+    color: #333;
+    margin: 0;
+  }
+
+  .bill-status.success {
+    background: #4CAF50;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .bill-section {
+    margin-bottom: 25px;
+  }
+
+  .bill-section h3 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 18px;
+  }
+
+  .bill-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 8px 0;
+  }
+
+  .bill-item-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    padding: 5px 0;
+    color: #666;
+  }
+
+  .status-success {
+    color: #4CAF50;
+    font-weight: 600;
+  }
+
+  .bill-totals {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+  }
+
+  .total-row {
+    border-top: 2px solid #e1e5e9;
+    padding-top: 15px;
+    font-weight: bold;
+    font-size: 18px;
+    color: #333;
+  }
+
+  .bill-footer {
+    text-align: center;
+    margin: 25px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 8px;
+  }
+
+  .bill-footer p {
+    margin: 5px 0;
+  }
+
+  .bill-actions {
+    display: flex;
+    gap: 15px;
+  }
+
+  .print-btn {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #6c757d;
+    background: white;
+    color: #6c757d;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .continue-btn {
+    flex: 2;
+    padding: 12px;
+    border: none;
+    background: #4CAF50;
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  @media print {
+    .bill-actions {
+      display: none;
+    }
+    
+    .bill-overlay {
+      position: static;
+      background: white;
+      padding: 0;
+    }
+    
+    .bill-card {
+      box-shadow: none;
+      border: none;
+    }
+  }
 `;
 
 // Inject styles into the document
