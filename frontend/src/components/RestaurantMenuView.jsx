@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Feedback from "./Feedback";
 
 export default function RestaurantMenuView({ restaurant, foods, onBack, onAddToCart, onThankYou }) {
   const [cartItems, setCartItems] = useState([]);
@@ -7,6 +8,8 @@ export default function RestaurantMenuView({ restaurant, foods, onBack, onAddToC
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [reviewText, setReviewText] = useState("");
   const [showReview, setShowReview] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [showFoodFeedback, setShowFoodFeedback] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
@@ -228,7 +231,87 @@ export default function RestaurantMenuView({ restaurant, foods, onBack, onAddToC
   };
 
   const handleReviewSubmit = () => {
+    // Show success notification
+    const notification = document.createElement("div");
+    notification.className = "review-success-notification";
+    notification.innerHTML = `
+      <div class="notification-content">
+        <div class="notification-icon">✅</div>
+        <div class="notification-text">
+          <strong>Thank you for your review!</strong>
+          <p>Your feedback helps us serve you better</p>
+        </div>
+      </div>
+    `;
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 10000;
+      background: linear-gradient(135deg, #4CAF50, #45a049);
+      color: white;
+      padding: 16px 20px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(76, 175, 80, 0.3);
+      max-width: 350px;
+      animation: slideInRight 0.5s ease-out;
+    `;
+    
+    // Add animation styles
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideInRight {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      .notification-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .notification-icon {
+        font-size: 24px;
+      }
+      .notification-text strong {
+        display: block;
+        font-size: 16px;
+        margin-bottom: 4px;
+      }
+      .notification-text p {
+        margin: 0;
+        font-size: 14px;
+        opacity: 0.9;
+      }
+    `;
+    document.head.appendChild(style);
+    document.body.appendChild(notification);
+    
+    // Remove notification after 4 seconds
+    setTimeout(() => {
+      notification.remove();
+      style.remove();
+    }, 4000);
+    
+    // Reset review state and show food feedback
+    setReviewText("");
+    setRating(0);
     setShowReview(false);
+    
+    // Show food feedback after a short delay
+    setTimeout(() => {
+      setShowFoodFeedback(true);
+    }, 1000);
+  };
+
+  const handleFoodFeedbackSubmit = (feedbackData) => {
+    console.log("Food feedback submitted:", feedbackData);
+    setShowFoodFeedback(false);
     onThankYou();
     setCartItems([]);
   };
@@ -241,17 +324,43 @@ export default function RestaurantMenuView({ restaurant, foods, onBack, onAddToC
     return (
       <div className="review-flow">
         <div className="review-card">
-          <h2>⭐ Rate Your Experience</h2>
-          <p>How was your order from {restaurant.name}?</p>
-          <textarea
-            value={reviewText}
-            onChange={(e) => setReviewText(e.target.value)}
-            placeholder="Share your experience with this restaurant..."
-            className="review-textarea"
-          />
+          <div className="thank-you-section">
+            <div className="thank-you-icon">🎉</div>
+            <h2>Thank You for Your Order!</h2>
+            <p>Your order from {restaurant.name} has been successfully placed.</p>
+            <p className="delivery-info">Estimated delivery: 30-45 minutes</p>
+          </div>
+          
+          <div className="review-section">
+            <h3>⭐ Rate Your Experience</h3>
+            <p>How was your order? Your feedback helps us improve!</p>
+            
+            <div className="rating-section">
+              <div className="star-rating">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    className={`star-btn ${star <= (rating || 0) ? 'active' : ''}`}
+                    onClick={() => setRating(star)}
+                  >
+                    ⭐
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            <textarea
+              value={reviewText}
+              onChange={(e) => setReviewText(e.target.value)}
+              placeholder="Share your experience with this restaurant... (optional)"
+              className="review-textarea"
+              rows={4}
+            />
+          </div>
+          
           <div className="review-actions">
-            <button onClick={handleBackToMenu} className="back-btn">
-              ← Back to Menu
+            <button onClick={handleBackToMenu} className="skip-btn">
+              Skip Review
             </button>
             <button onClick={handleReviewSubmit} className="submit-review-btn">
               ⭐ Submit Review
@@ -684,6 +793,16 @@ export default function RestaurantMenuView({ restaurant, foods, onBack, onAddToC
         <button onClick={handleCheckout} className="floating-cart-btn">
           🛒 View Cart ({cartItems.length})
         </button>
+      )}
+
+      {/* Food Feedback Modal */}
+      {showFoodFeedback && (
+        <Feedback
+          onClose={() => setShowFoodFeedback(false)}
+          onSubmit={handleFoodFeedbackSubmit}
+          restaurantName={restaurant.name}
+          orderItems={cartItems}
+        />
       )}
     </div>
   );
@@ -1184,6 +1303,161 @@ const styles = `
       box-shadow: none;
       border: none;
     }
+  }
+
+  /* Review Flow Styles */
+  .review-flow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+
+  .review-card {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .thank-you-section {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+  }
+
+  .thank-you-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+  }
+
+  .thank-you-section h2 {
+    margin: 0 0 10px 0;
+    font-size: 24px;
+  }
+
+  .thank-you-section p {
+    margin: 5px 0;
+    opacity: 0.9;
+  }
+
+  .delivery-info {
+    font-weight: 600;
+    color: #ffd700;
+  }
+
+  .review-section {
+    margin-bottom: 25px;
+  }
+
+  .review-section h3 {
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .review-section p {
+    color: #666;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .rating-section {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .star-rating {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .star-btn {
+    background: none;
+    border: none;
+    font-size: 32px;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0.3;
+  }
+
+  .star-btn:hover {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+
+  .star-btn.active {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  .review-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color 0.3s;
+  }
+
+  .review-textarea:focus {
+    outline: none;
+    border-color: #4CAF50;
+  }
+
+  .review-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+  }
+
+  .skip-btn {
+    padding: 12px 24px;
+    border: 2px solid #6c757d;
+    background: white;
+    color: #6c757d;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .skip-btn:hover {
+    background: #6c757d;
+    color: white;
+  }
+
+  .submit-review-btn {
+    padding: 12px 24px;
+    border: none;
+    background: #4CAF50;
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .submit-review-btn:hover {
+    background: #45a049;
+    transform: translateY(-2px);
   }
 `;
 

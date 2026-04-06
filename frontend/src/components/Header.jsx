@@ -1,9 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import Feedback from "./Feedback";
 
 export default function Header({ cartCount = 0 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
   const [profileImage, setProfileImage] = useState(localStorage.getItem("profileImage") || "");
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -33,6 +35,12 @@ export default function Header({ cartCount = 0 }) {
     localStorage.removeItem("profileImage");
   };
 
+  const handleFeedbackSubmit = (feedbackData) => {
+    console.log("Feedback submitted:", feedbackData);
+    // Here you could send the feedback to your backend
+    // For now, we'll just log it
+  };
+
   return (
     <header className="modern-header">
       <div className="header-container">
@@ -55,6 +63,12 @@ export default function Header({ cartCount = 0 }) {
             🛒 Cart
             {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
           </Link>
+          <button 
+            className="nav-link feedback-link" 
+            onClick={() => setShowFeedback(true)}
+          >
+            📝 Feedback
+          </button>
         </nav>
 
         <div className="header-right">
@@ -118,6 +132,13 @@ export default function Header({ cartCount = 0 }) {
           </button>
         </div>
       </div>
+      
+      {showFeedback && (
+        <Feedback 
+          onClose={() => setShowFeedback(false)}
+          onSubmit={handleFeedbackSubmit}
+        />
+      )}
     </header>
   );
 }
