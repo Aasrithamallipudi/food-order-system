@@ -15,38 +15,61 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
-    
+
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedFullName = fullName.trim();
+
     try {
       const endpoint = isRegister ? "/auth/register" : "/auth/login";
-      const payload = isRegister ? { fullName, email, password } : { email, password };
-      
+      const payload = isRegister
+        ? { fullName: normalizedFullName, email: normalizedEmail, password }
+        : { email: normalizedEmail, password };
+
       console.log("Submitting to:", endpoint);
       console.log("Payload:", payload);
-      
+
       const res = await api.post(endpoint, payload);
-      
+
       console.log("Response:", res.data);
-      
+
       // Store token and username
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("username", res.data.fullName || res.data.username || email.split('@')[0]);
-      
+      localStorage.setItem("username", res.data.fullName || res.data.username || normalizedEmail.split('@')[0]);
+
       console.log("Token stored:", res.data.token);
-      console.log("Username stored:", res.data.fullName || res.data.username || email.split('@')[0]);
-      
+      console.log("Username stored:", res.data.fullName || res.data.username || normalizedEmail.split('@')[0]);
+
       // Show success message
       alert(isRegister ? "✅ Registration successful! Welcome to FoodExpress!" : "✅ Login successful!");
-      
+
       // Navigate to restaurants page (dashboard)
       navigate("/");
-      
+
     } catch (err) {
       console.error("Auth error:", err);
       console.error("Error response:", err.response?.data);
-      
-      const errorMessage = err.response?.data?.message || 
-                         (isRegister ? "Registration failed. Email may already exist." : "Login failed. Check your credentials.");
-      
+
+      const status = err.response?.status;
+      let errorMessage = err.response?.data?.message;
+
+      if (!errorMessage && isRegister && status === 409) {
+        errorMessage = "Email already registered. Please sign in.";
+      }
+      if (!errorMessage && status === 400) {
+        errorMessage = "Please enter valid details and try again.";
+      }
+      if (!errorMessage && status >= 500) {
+        errorMessage = "Server error. Please try again in a moment.";
+      }
+      if (!errorMessage && !err.response) {
+        errorMessage = "Unable to reach server. Check backend URL or CORS settings.";
+      }
+      if (!errorMessage) {
+        errorMessage = isRegister
+          ? "Registration failed. Please try again."
+          : "Login failed. Check your credentials.";
+      }
+
       setError(errorMessage);
       alert(errorMessage);
     } finally {

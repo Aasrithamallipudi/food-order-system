@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +20,6 @@ import com.foodorder.backend.repository.UserRepository;
 
 @RestController
 @RequestMapping("/api/reviews")
-@CrossOrigin(origins = "http://localhost:5173")
 public class ReviewController {
     private final ReviewRepository reviewRepository;
     private final RestaurantRepository restaurantRepository;

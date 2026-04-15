@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://food-order-system-3.onrender.com/api"
+  baseURL: (import.meta.env.VITE_API_BASE_URL || "https://food-order-system-3.onrender.com/api").replace(/\/$/, "")
 });
 
 // Add request interceptor for debugging

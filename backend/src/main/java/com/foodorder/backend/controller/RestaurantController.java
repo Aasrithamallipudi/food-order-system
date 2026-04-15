@@ -1,15 +1,18 @@
 package com.foodorder.backend.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.foodorder.backend.model.FoodItem;
 import com.foodorder.backend.model.Restaurant;
 import com.foodorder.backend.repository.FoodItemRepository;
 import com.foodorder.backend.repository.RestaurantRepository;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 @RestController
 @RequestMapping("/api/restaurants")
-@CrossOrigin(origins = "http://localhost:5173")
 public class RestaurantController {
 
     private final RestaurantRepository restaurantRepository;

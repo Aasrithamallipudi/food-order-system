@@ -1,11 +1,12 @@
 package com.foodorder.backend.controller;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +24,6 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:5173")
 public class AuthController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -39,13 +39,17 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
+        String normalizedEmail = normalizeEmail(request.getEmail());
+
+        if (userRepository.findByEmail(normalizedEmail).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("message", "Email already registered. Please sign in."));
         }
+
         User user = new User();
-        user.setFullName(request.getFullName());
-        user.setEmail(request.getEmail());
+        user.setFullName(request.getFullName().trim());
+        user.setEmail(normalizedEmail);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.ROLE_USER);
         userRepository.save(user);
@@ -57,15 +61,19 @@ public class AuthController {
                         .authorities(user.getRole().name())
                         .build()
         );
+
         return ResponseEntity.ok(new AuthResponse(token, user.getFullName(), user.getEmail(), user.getRole()));
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
+        String normalizedEmail = normalizeEmail(request.getEmail());
+
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+                new UsernamePasswordAuthenticationToken(normalizedEmail, request.getPassword())
         );
-        User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
+
+        User user = userRepository.findByEmail(normalizedEmail).orElseThrow();
         String token = jwtService.generateToken(
                 org.springframework.security.core.userdetails.User
                         .withUsername(user.getEmail())
@@ -73,6 +81,11 @@ public class AuthController {
                         .authorities(user.getRole().name())
                         .build()
         );
+
         return ResponseEntity.ok(new AuthResponse(token, user.getFullName(), user.getEmail(), user.getRole()));
+    }
+
+    private String normalizeEmail(String email) {
+        return email == null ? "" : email.trim().toLowerCase();
     }
 }

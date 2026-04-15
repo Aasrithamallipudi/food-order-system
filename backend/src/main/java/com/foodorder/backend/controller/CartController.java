@@ -3,7 +3,6 @@ package com.foodorder.backend.controller;
 import java.util.List;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +20,6 @@ import com.foodorder.backend.repository.UserRepository;
 
 @RestController
 @RequestMapping("/api/cart")
-@CrossOrigin(origins = "http://localhost:5173")
 public class CartController {
     private final CartItemRepository cartItemRepository;
     private final FoodItemRepository foodItemRepository;

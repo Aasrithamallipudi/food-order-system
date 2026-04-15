@@ -1,5 +1,14 @@
 package com.foodorder.backend.controller;
 
+import java.util.List;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.foodorder.backend.dto.CheckoutRequest;
 import com.foodorder.backend.model.CartItem;
 import com.foodorder.backend.model.FoodOrder;
@@ -8,15 +17,11 @@ import com.foodorder.backend.model.User;
 import com.foodorder.backend.repository.CartItemRepository;
 import com.foodorder.backend.repository.FoodOrderRepository;
 import com.foodorder.backend.repository.UserRepository;
-import jakarta.validation.Valid;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/orders")
-@CrossOrigin(origins = "http://localhost:5173")
 public class OrderController {
     private final FoodOrderRepository foodOrderRepository;
     private final CartItemRepository cartItemRepository;
