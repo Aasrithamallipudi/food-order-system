@@ -37,6 +37,32 @@ npm run dev
 
 Frontend runs on `http://localhost:5173`.
 
+## Docker Setup
+Run both services with Docker Compose from the project root:
+```bash
+docker compose up --build
+```
+
+Then open:
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:8081`
+
+If you want to run just one service:
+```bash
+docker build -t food-order-backend ./backend
+docker build -t food-order-frontend ./frontend
+```
+
+If you are inside the `backend` folder, build the backend image with:
+```bash
+docker build -t food-order-backend .
+```
+
+Then run them separately:
+```bash
+docker run -p 8081:8081 food-order-backend
+docker run -p 5173:80 food-order-frontend
+```
 ## Core API Endpoints
 - Auth:
   - `POST /api/auth/register`

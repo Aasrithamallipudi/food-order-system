@@ -1,0 +1,21 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      DB_URL: jdbc:h2:mem:food_order_db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      DB_USERNAME: sa
+      DB_PASSWORD: ""
+      DB_DRIVER: org.h2.Driver
+      JPA_DIALECT: org.hibernate.dialect.H2Dialect
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
