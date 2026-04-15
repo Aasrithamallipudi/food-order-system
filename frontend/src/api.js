@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:8081/api"
+  baseURL: "https://food-order-system-3.onrender.com/api"
 });
 
 // Add request interceptor for debugging
